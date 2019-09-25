@@ -122,4 +122,10 @@ export class NavbarComponent implements OnInit {
       }
       return 'Dashboard';
     }
+
+
+    lofout(){
+        localStorage.removeItem('loginUserDetail');
+        this.router.navigate(['/dashboard']); 
+    }
 }

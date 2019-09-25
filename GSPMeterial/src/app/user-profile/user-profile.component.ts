@@ -26,9 +26,6 @@ profileForm : FormGroup;
 
   ngOnInit() {
     this.loginUser = JSON.parse(localStorage.getItem('loginUserDetail'));
-    console.log('user loginUser ', this.loginUser)
-    console.log('user loginUser1 '+ JSON.stringify(this.loginUser));
-
 
     this.getUserDetail();
     this.profileFormGroup();
@@ -36,16 +33,14 @@ profileForm : FormGroup;
 
   getUserDetail(){
     let userId = {id : this.loginUser['_id']};
-    console.log('user ID ', userId)
     if(userId){
       this.authenticationService.getUserDetail(userId)
       .pipe(first())
       .subscribe(
           data => {
-              console.log("register data ", data)
               let userData = data['user'];
               if(userData['firstName']){this.profileForm.controls['firstName'].setValue(userData['firstName']);}
-              if(userData['LastName']){this.profileForm.controls['LastName'].setValue(userData['LastName']);}
+              if(userData['lastName']){this.profileForm.controls['lastName'].setValue(userData['lastName']);}
               if(userData['email']){this.profileForm.controls['email'].setValue(userData['email']);}
               if(userData['address']){this.profileForm.controls['address'].setValue(userData['address']);}
               if(userData['country']){this.profileForm.controls['country'].setValue(userData['country']);}
@@ -91,10 +86,9 @@ profileForm : FormGroup;
     let userProfileData ={};
 
     let userId = {id : this.loginUser['_id']};
-    console.log('user ID ', userId)
     if(userId){
         userProfileData = {
-          _id : userId,
+          _id : userId['id'],
           firstName : this.profileForm.get('firstName').value,
           lastName:this.profileForm.get('lastName').value,
           email:this.profileForm.get('email').value,
@@ -107,18 +101,17 @@ profileForm : FormGroup;
     }
 
     this.loading = true;
-    this.authenticationService.userRegistration(userProfileData)
+    this.authenticationService.userUpdateProfile(userProfileData)
     .pipe(first())
     .subscribe(
         data => {
-            console.log("register data ", data)
-            this.toastr.success('Registration successfully!', 'Registration', {
-                timeOut: 3000
-              });
-                this.submitted= false;
-                this.loading = false;
-                this.profileForm.reset();
-                this.router.navigate(['/login']);this.router.isActive;
+          console.log("register data ", data, " ", data['status'], " ", data['message'])
+          if(data['status'] == true){
+            this.toastr.success(data['message'], 'Profile');
+              this.submitted= false;
+              this.loading = false;
+              this.getUserDetail();
+            }
         },
         error => {
             this.toastr.error(error);

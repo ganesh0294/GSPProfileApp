@@ -13,24 +13,28 @@ export class ServiceService {
   login = environment.url+'/users/login';
   registration = environment.url+'/users/registration';
   getUserData = environment.url+'/users/userDetail';
+  updateUserProfile = environment.url+'/users/updateUserProfile';
 
   constructor(private  httpClient:HttpClient) { }
 
   userLogin(loginDetail){
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    console.log("loginDetail ", loginDetail);
     return this.httpClient.post(this.login,loginDetail,{headers:this.headers});
   }
 
   userRegistration(registrationDetail){
     this.headers.set('Content-Type', 'application/json; charset=utf-8');
-    console.log("loginDetail ", registrationDetail);
     return this.httpClient.post(this.registration,registrationDetail,{headers:this.headers});
   }
 
   getUserDetail(userId){
-    console.log("User ID ", userId)
     return this.httpClient.post(this.getUserData,userId,{headers:this.headers});
+  }
+
+  userUpdateProfile(userProfileData){
+    this.headers.set('Content-Type', 'application/json; charset=utf-8');
+    console.log("loginDetail ", userProfileData);
+    return this.httpClient.post(this.updateUserProfile,userProfileData,{headers:this.headers});
   }
 
 }

@@ -48,9 +48,7 @@ router.post('/userDetail',function(req, res, next){
 })
 
 // For Login
-router.post('/login', function(req, res, next){
-  console.log("response login ", req.body);
-  
+router.post('/login', function(req, res, next){ 
   Users.findOne({
     $and: [
         {email: req.body.email}, 
@@ -71,17 +69,26 @@ router.post('/login', function(req, res, next){
             message: 'Encountered an error finding user',
             error: err
         })
-    })
-
-  // Users.find(function(error, callback){
-  //   if(error) throw(error)
-  //   console.log("callback ",callback);
-
-  //   const result = callback.find( ({ email }) => email === req.email );
-  //   console.log("result ", result)
-
-  // })
+    });
 
 })
+
+// For updateUserProfile
+router.post('/updateUserProfile', function(req, res, next){
+  console.log("res updateUserProfile ", req.body);
+
+  var query = {'_id': req.body['_id']};
+  //req.newData.username = req.user.username;
+  Users.findOneAndUpdate(query, req.body, {upsert:true}, function(err, doc){
+      if (err) return res.send(500, { error: err });
+      //return res.send("Succesfully Update!");
+      return res.json({
+        status: true,
+        message : "Succesfully Update!"
+      })
+  });
+
+
+});
 
 module.exports = router;

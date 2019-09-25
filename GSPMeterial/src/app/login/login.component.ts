@@ -32,22 +32,13 @@ export class LoginComponent implements OnInit {
         email: ['', Validators.required],
         password: ['', Validators.required]
       });
-
-      // get return url from route parameters or default to '/'
-    //   this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
     onSubmit() {
-        console.log("loginForm " , this.loginForm.controls.value)
         this.submitted = true;
-
-        // // reset alerts on submit
-        // this.alertService.clear();
-
-        // // stop here if form is invalid
         if (this.loginForm.invalid) {
             return;
         }
@@ -59,9 +50,6 @@ export class LoginComponent implements OnInit {
 
         this.loading = true;
         this.authenticationService.userLogin(loginDetail).subscribe(data => {
-            // this.router.navigate([this.returnUrl]);
-            console.log("data : ", data);
-
             if(data['status'] == true){
               let userData = data['user'];
               localStorage.setItem('loginUserDetail', JSON.stringify(userData));
@@ -69,15 +57,12 @@ export class LoginComponent implements OnInit {
               this.router.navigate(['/dashboard']); 
               this.router.isActive;
             }
-
             if(data['status'] == false){
               this.toastr.success(data['message'], 'Log-in');
             }
             
         },
         error => {
-          console.log("error : ", error);
-
           if(error.status == 404){
             this.toastr.error(error['error'].message, 'Log-in')
             this.loading = false;
